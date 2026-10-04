@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Machine Learning
+*.pkl
+*.joblib
+*.h5
+*.keras
+*.pt
+*.pth
+
+# Datasets
+audio_ml/dataset/*
+!audio_ml/dataset/.gitkeep
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# Secrets
+secrets.json
+credentials.json
