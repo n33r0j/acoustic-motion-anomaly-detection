@@ -42,3 +42,4 @@ audio_ml/dataset/*
 # Secrets
 secrets.json
 credentials.json
+edge/audio_events/
