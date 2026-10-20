@@ -2,9 +2,15 @@ import serial
 import wave
 import struct
 import time
+import sys
 from pathlib import Path
 
-PORT = "/dev/cu.usbserial-10"
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from audio_ml.inference.predict import predict
+from sensor_fusion.fusion import sensor_fusion
+
+PORT = "/dev/cu.usbserial-110"
 BAUD_RATE = 460800
 
 SAMPLE_RATE = 16000
@@ -14,6 +20,7 @@ SAMPLE_WIDTH = 2  # int16 = 2 bytes
 OUTPUT_DIR = Path("edge/audio_events")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+motion = 0
 ser = serial.Serial(
     PORT,
     BAUD_RATE,
@@ -38,11 +45,13 @@ while True:
 
     if line.startswith("MOTION:"):
 
-        motion = int(
+        new_motion = int(
             line.split(":")[1]
         )
 
-        print(f"Motion: {motion}")
+        if new_motion != motion:
+            motion = new_motion
+            print(f"Motion changed: {motion}")  
 
     # -----------------------------
     # Audio event
@@ -101,3 +110,28 @@ while True:
         print(
             f"Saved: {filename}"
         )
+        # -----------------------------
+        # Acoustic ML prediction
+        # -----------------------------
+
+        acoustic_event, confidence = predict(str(filename))
+
+        print("\n--- ACOUSTIC PREDICTION ---")
+        print(f"Event:      {acoustic_event}")
+        print(f"Confidence: {confidence:.2f}")
+        # -----------------------------
+        # Sensor fusion
+        # -----------------------------
+
+        fusion_result = sensor_fusion(
+            acoustic_event,
+            confidence,
+            motion
+        )
+
+        print("\n--- SENSOR FUSION RESULT ---")
+        print(f"Acoustic event: {fusion_result['acoustic_event']}")
+        print(f"Confidence:     {fusion_result['confidence']:.2f}")
+        print(f"Motion:         {fusion_result['motion']}")
+        print(f"Result:         {fusion_result['result']}")
+        print(f"Severity:       {fusion_result['severity']}")
