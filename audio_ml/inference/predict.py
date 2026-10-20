@@ -79,6 +79,8 @@ def predict(file_path):
     ):
         print(f"  {class_name}: {probability:.2f}")
 
+    return predicted_class, confidence
+
 
 if __name__ == "__main__":
 
