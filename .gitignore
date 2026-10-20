@@ -43,3 +43,18 @@ audio_ml/dataset/*
 secrets.json
 credentials.json
 edge/audio_events/
+
+# Large audio dataset
+audio_ml/dataset/anomaly_4class/**/*.wav
+audio_ml/dataset/anomaly_4class/**/*.mp3
+
+# Generated ML files
+audio_ml/features/anomaly_4class/
+audio_ml/models/anomaly_4class/
+
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
