@@ -1,0 +1,8 @@
+{
+  "timestamp": 1792697485,
+  "acoustic_event": "footsteps",
+  "confidence": 0.57,
+  "motion": 0,
+  "result": "acoustic_event",
+  "severity": "medium"
+}

@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from audio_ml.inference.predict import predict
 from sensor_fusion.fusion import sensor_fusion
+from cloud.mqtt_client import connect_mqtt, publish_event
 
 PORT = "/dev/cu.usbserial-10"
 BAUD_RATE = 460800
@@ -29,7 +30,7 @@ ser = serial.Serial(
     BAUD_RATE,
     timeout=2
 )
-
+mqtt_connection = connect_mqtt()
 print("Connected to ESP32")
 print("Waiting for audio events...")
 
@@ -160,3 +161,7 @@ while True:
             json.dump(event_data, json_file, indent=2)
 
         print(f"JSON saved: {json_filename}")
+        publish_event(
+            mqtt_connection,
+            event_data
+     )
