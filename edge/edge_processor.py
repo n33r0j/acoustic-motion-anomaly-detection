@@ -3,6 +3,7 @@ import wave
 import struct
 import time
 import sys
+import json
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -10,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from audio_ml.inference.predict import predict
 from sensor_fusion.fusion import sensor_fusion
 
-PORT = "/dev/cu.usbserial-110"
+PORT = "/dev/cu.usbserial-10"
 BAUD_RATE = 460800
 
 SAMPLE_RATE = 16000
@@ -19,6 +20,8 @@ SAMPLE_WIDTH = 2  # int16 = 2 bytes
 
 OUTPUT_DIR = Path("edge/audio_events")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+JSON_DIR = Path("edge/event_json")
+JSON_DIR.mkdir(parents=True, exist_ok=True)
 
 motion = 0
 ser = serial.Serial(
@@ -135,3 +138,25 @@ while True:
         print(f"Motion:         {fusion_result['motion']}")
         print(f"Result:         {fusion_result['result']}")
         print(f"Severity:       {fusion_result['severity']}")
+        # -----------------------------
+        # Create event JSON
+        # -----------------------------
+
+        event_data = {
+            "timestamp": timestamp,
+            "acoustic_event": fusion_result["acoustic_event"],
+            "confidence": round(fusion_result["confidence"], 2),
+            "motion": fusion_result["motion"],
+            "result": fusion_result["result"],
+            "severity": fusion_result["severity"]
+        }
+
+        json_filename = (
+            JSON_DIR /
+            f"event_{timestamp}.json"
+        )
+
+        with open(json_filename, "w") as json_file:
+            json.dump(event_data, json_file, indent=2)
+
+        print(f"JSON saved: {json_filename}")
