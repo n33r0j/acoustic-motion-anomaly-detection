@@ -144,6 +144,7 @@ while True:
         # -----------------------------
 
         event_data = {
+            "event_id": f"evt-{timestamp}-001",
             "timestamp": timestamp,
             "acoustic_event": fusion_result["acoustic_event"],
             "confidence": round(fusion_result["confidence"], 2),
